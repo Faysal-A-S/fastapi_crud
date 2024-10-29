@@ -20,7 +20,6 @@ def get_db():
 @app.get("/users")
 def user_list(db: Session = Depends(get_db)):
     userlist = db.query(models.userModels.Users).all()
-    print(db.query(models.userModels.Users).all())
     return {"data":userlist}
 
 @app.get("/users/{id}")
@@ -47,6 +46,12 @@ def create_user(user:UserCreate,db: Session = Depends(get_db)):
 @app.put("/users/{id}")
 def update_user(id: int, data: UserUpdate,db: Session = Depends(get_db)):
     userModel = db.query(models.userModels.Users).filter(models.userModels.Users.id==id).first()
+    receivedData=data.dict(exclude_unset=True)
+    for key,value in data.dict(exclude_unset=True).items():
+        setattr(userModel,key,value)
+    db.commit()
+    db.refresh(userModel)    
+    return userModel
 
     if userModel is None:
         raise HTTPException(status_code=404, detail="Data with the given id not found.")    
