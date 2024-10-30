@@ -1,17 +1,18 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class UserBase(BaseModel):
     name: str
     age: int
     city: str
-class UserUpdate(UserBase):
-    name :str =None
-    age :int =None
-    city: str =None
 
-class UserCreate(UserBase):
-    id:int
+class UserIn(UserBase):
+    id: int
 
+class UserOut(UserBase):
+    id: int
 
-
-
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    age: Optional[int] = None
+    city:Optional[str]  = None
