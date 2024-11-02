@@ -3,16 +3,16 @@ from typing import Optional
 
 class UserBase(BaseModel):
     name: str
-    age: int
-    city: str
+    email:str
+    phone:str
 
 class UserIn(UserBase):
-    id: int
+    pass
 
 class UserOut(UserBase):
     id: int
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
-    age: Optional[int] = None
-    city:Optional[str]  = None
+    email: Optional[str] = None
+    phone:Optional[str]  = None

@@ -1,10 +1,10 @@
 from sqlalchemy import Column,Integer,String
-from database.databaseSQL import Base
+from src.database.databaseSQL import Base
 
 class Users(Base):
     __tablename__ = "users"
 
-    id = Column(Integer,primary_key=True,index=True)
-    name = Column(String)
-    city = Column(String)
-    age = Column(Integer)
+    id = Column(Integer,primary_key=True,index=True,autoincrement=True)
+    name = Column(String(255))
+    email = Column(String(255))
+    phone = Column(String(255))
