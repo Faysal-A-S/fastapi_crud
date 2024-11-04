@@ -3,12 +3,12 @@ import uvicorn
 from src.models.userModels import Users
 from sqlalchemy import text
 from src.schemas.users import UserOut,UserUpdate,UserIn
-from src.database.databaseSQL import engine,SessionLocal
+from src.database.databaseSQL import SessionLocal
 from sqlalchemy.orm import Session
 from typing import List
-
+from src.utils import auth
 app = FastAPI()
-
+app.include_router(auth.router)
 
 def get_db():
     db = SessionLocal()
@@ -28,6 +28,8 @@ def create_user(user_data:UserIn,db: Session = Depends(get_db)):
     user.name = user_data.name
     user.email = user_data.email
     user.phone = user_data.phone
+    user.password = auth.bcrypt_context.hash(user_data.password)
+
     db.add(user)
     db.commit()
     db.refresh(user)
