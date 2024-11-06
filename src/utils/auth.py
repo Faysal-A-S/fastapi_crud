@@ -17,6 +17,7 @@ router = APIRouter(
 
 SECRET_KEY = "dgfjsdghfsdjhgfsh"
 ALGORITHM = "HS256"
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 def get_db():
     db = SessionLocal()
     try:
@@ -43,3 +44,13 @@ def create_access_token(name: str,id: int,expire: timedelta):
     expires = datetime.utcnow() + expire
     encode.update({"exp": expires})   
     return jwt.encode(encode,SECRET_KEY,algorithm = ALGORITHM)
+
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        name: str = payload.get("sub")
+        if name is None:
+            return {"message":"Not logged in"}
+        return name  
+    except JWTError:
+        return {"message":"JWT validation failed"}

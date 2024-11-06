@@ -37,7 +37,7 @@ def create_user(user_data:UserIn,db: Session = Depends(get_db)):
 
 
 @app.get("/users/{id}",response_model=UserOut)
-def user(id:int,db: Session = Depends(get_db)):
+def user(id:int,db: Session = Depends(get_db), user: str = Depends(auth.get_current_user)):
     user = db.query(Users).filter(Users.id==id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User with given id doesn't exists") 
