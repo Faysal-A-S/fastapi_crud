@@ -17,7 +17,7 @@ router = APIRouter(
 
 SECRET_KEY = "dgfjsdghfsdjhgfsh"
 ALGORITHM = "HS256"
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 def get_db():
     db = SessionLocal()
     try:
@@ -50,8 +50,16 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         name: str = payload.get("sub")
         if name is None:
-            return {"message":"Not logged in"}
-        return name  
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not logged in",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        return name
     except JWTError:
-        return {"message":"JWT validation failed"}
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="JWT validation failed",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
